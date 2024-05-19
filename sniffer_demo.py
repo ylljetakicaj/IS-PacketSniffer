@@ -27,14 +27,38 @@ def main():
             print(TAB_1 + 'IPv4 Packet:')
             print(TAB_2 + 'Version: {}, Header Length {}, TTL: {}'.format(version, header_length, ttl))
             print(TAB_2 + 'Protocol: {}, Source: {}, Target: {}'.format(proto, src, target))
-
+            
+            #ICMP
             if proto == 1:
                 icmp_type, code, checksum, data = icmp_packet(data)
                 print(TAB_1 + 'ICMP Packet:')
                 print(TAB_2 + 'Type: {}, Code: {}, Checksum: {},'.format(icmp_type, code, checksum))
                 print(TAB_2 + 'Data:')
                 print(format_multi_line(DATA_TAB_3, data))
-                
+            #TCP
+            elif proto == 6:
+                (src_port, dest_port, sequence, acknowledgement, flag_urg, flag_ack, flag_psh, flag_rst, flag_syn, flag_fin, data) = tcp_segment(data)
+                print(TAB_1 + 'TCP Segement: ')
+                print(TAB_2 + 'Source Port: {}, Destination Port: {}'.format(src_port, dest_port))
+                print(TAB_2 + 'Sequence: {}, Acknowledgment: {}'.format(sequence, acknowledgment))
+                print(TAB_2 + 'Flags:')
+                print(TAB_3 + 'URG: {}, ACK: {}, PSH: {}, RST: {}, SYN: {}, FIN{}'.format(flag_urg, flag_ack, flag_psh, flag_rst, flag_syn, flag_fin))
+                print(TAB_2 + 'Data:')
+                print(format_multi_line(DATA_TAB_3, data))
+            #UDP
+            elif proto == 17:
+                src_port, dest_port, length, data = udp_segment(data)
+                print(TAB_1 + 'UDP Segment:')
+                print(TAB_2 + 'Source Port: {}, Destination Port: {}, Length: {}'.format(src_port, dest_port, length))
+            #Other
+            else:
+                print(TAB_1 + 'Data:')
+                print(format_multi_line(DATA_TAB_2, data))
+        else:
+            print('Data:')
+            print(format_multi_line(DATA_TAB_1, data))
+
+
               
 def ethernnet_frame(data):
     dest_mac, src_mac, proto = struct.unpack('! 6s 6s H', data[:14]
