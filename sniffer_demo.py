@@ -19,7 +19,7 @@ def get_mac_addr(bytes_addr):
     bytes_str = map('{02x}'.format, bytes_addr)
     return ':'.join(bytes_str).upper()
 
-#unpack IPv4 packets
+#unpacking IPv4 packets
 def ipv4_packet(data):
     version_header_length = data[0]
     version = version_header_length >> 4 #bit shift it by 4 to the right
@@ -30,7 +30,21 @@ def ipv4_packet(data):
 def ipv4(addr):
     return  '.'.join(map(str, addr)) # converting to string 127.0.0.1 for example
 
-# unpack ICMP internet control message protocol packet
+# unpacking ICMP internet control message protocol packet
 def icmp_packet(data):
     icmp_type, code, checksum = struct.unpack('! B B H', data[:4])
     return icmp_type, code, checksum, data[4:]
+
+# unpacking TCP segment
+def tcp_segment(data):
+    (src_port, dest_port, sequence, acknowledgement, offset_reserved_flags) = struct.unpack('! H H L L H', data[:14])
+    offset = (offset_reserved_flags >>12) * 4
+    flag_urg = (offset_reserved_flags & 32) >> 5
+    flag_ack = (offset_reserved_flags & 16) >> 4
+    flag_psh = (offset_reserved_flags & 8) >> 3
+    flag_rst = (offset_reserved_flags & 4) >> 2
+    flag_syn = (offset_reserved_flags & 2) >> 1
+    flag_fin = offset_reserved_flags & 1
+    return src_port, dest_port, sequence, acknowledgement, flag_urg, flag_ack, flag_psh, flag_rst, flag_syn, flag_fin, data[offset:]
+
+main()
