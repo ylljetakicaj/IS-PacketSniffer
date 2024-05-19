@@ -21,3 +21,17 @@ class SnifferGUI:
 
         self.sniffing = False
 
+    def start_sniffing(self):
+        self.sniffing = True
+        self.start_button.config(state=tk.DISABLED)
+        self.stop_button.config(state=tk.NORMAL)
+        self.sniff_thread = threading.Thread(target=self.sniff_packets)
+        self.sniff_thread.start()
+
+    def stop_sniffing(self):
+        self.sniffing = False
+        self.start_button.config(state=tk.NORMAL)
+        self.stop_button.config(state=tk.DISABLED)
+
+    def sniff_packets(self):
+        scapy.sniff(prn=self.display_packet, store=0, stop_filter=lambda x: not self.sniffing)
