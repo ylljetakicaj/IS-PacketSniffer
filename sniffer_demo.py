@@ -26,3 +26,11 @@ def ipv4_packet(data):
     header_length = (version_header_length & 15) * 4 #compare 2 bytes
     ttl, proto, src, target = struct.unpack('! 8x B B 2x 4s 4s', data[:20])
     return version, header_length, ttl, proto, ipv4(src), ipv4(target), data[header_length:]
+
+def ipv4(addr):
+    return  '.'.join(map(str, addr)) # converting to string 127.0.0.1 for example
+
+# unpack ICMP internet control message protocol packet
+def icmp_packet(data):
+    icmp_type, code, checksum = struct.unpack('! B B H', data[:4])
+    return icmp_type, code, checksum, data[4:]
