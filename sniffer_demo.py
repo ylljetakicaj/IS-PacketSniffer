@@ -2,6 +2,16 @@ import socket
 import struct
 import textwrap
 
+TAB_1 = '\t - '
+TAB_2 = '\t\t - '
+TAB_3 = '\t\t\t - '
+TAB_4 = '\t\t\t\t - '
+
+DATA_TAB_1 = '\t '
+DATA_TAB_2 = '\t\t '
+DATA_TAB_3 = '\t\t\t '
+DATA_TAB_4 = '\t\t\t\t '
+
 def main():
     conn = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(3))
 
@@ -9,7 +19,8 @@ def main():
         raw_data, addr = conn.recvfrom(65536)
         dest_mac, str_mac, eth_proto, data = ethernet_frame(raw_data)
         print('\nEthernet frame:')
-        print('Destination: {}, Source: {}, Protocol: {}.format(dest_mac, src_mac, eth_proto))
+        print(TAB_1 + 'Destination: {}, Source: {}, Protocol: {}'.format(dest_mac, src_mac, eth_proto))
+            
               
 def ethernnet_frame(data):
     dest_mac, src_mac, proto = struct.unpack('! 6s 6s H', data[:14]
@@ -47,4 +58,18 @@ def tcp_segment(data):
     flag_fin = offset_reserved_flags & 1
     return src_port, dest_port, sequence, acknowledgement, flag_urg, flag_ack, flag_psh, flag_rst, flag_syn, flag_fin, data[offset:]
 
+#Unpacks UDP segment
+def udp_segment(data):
+    src_port, dest_port, size = struct.unpack('! H H 2x H', data[:8])
+    return src_port, dest_port, size, data[8:]
+
+
+#Formats multi-line data
+def format_multi_line(prefix, string, size=80):
+    size -= len(prefix)
+    if isinstance(string, bytes):
+        string = ''.join(r'\x{:02x}'.format(byte) for byte in string)
+        if size % 2:
+            size -= 1
+    return '\n'.join([prefix + line for line in textwrap(string, size)])
 main()
