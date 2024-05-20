@@ -16,13 +16,13 @@ This project is a simple packet sniffer implemented in Python. A packet sniffer 
 - tkinter library (for GUI mode)
   
 # Additional Files
-  sniffer.py
+ ``` sniffer.py ```
 This is the main file to run the packet sniffer. It supports both text and GUI modes. Depending on the mode specified, it either starts capturing packets and displaying them in the console or opens a graphical user interface for capturing and displaying packets.
 
-utils/packet_utils.py
+``` utils/packet_utils.py ```
 Contains utility functions related to packet capturing and processing. The start_sniffer function initializes the packet sniffer in text mode.
 
-gui/sniffer_gui.py
+``` gui/sniffer_gui.py ```
 Contains functions for setting up and running the graphical user interface. The start_gui function initializes the packet sniffer in GUI mode.
 
 # Usage
