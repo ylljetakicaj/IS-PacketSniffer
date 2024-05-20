@@ -28,4 +28,5 @@ Contains functions for setting up and running the graphical user interface. The 
 # Usage
 To run the packet sniffer, execute the following command in your terminal:
 ``` python sniffer.py --mode <mode> ```
+
 --mode: Mode to run the sniffer in (text for console-based, gui for graphical user interface)
